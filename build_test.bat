@@ -42,7 +42,7 @@ if errorlevel 1 (
 
 echo.
 echo Building test app...
-%PYTHON_CMD% -m PyInstaller --noconsole --name HealthReminderTest --distpath "%CD%\dist-test" --workpath "%CD%\build-test" --specpath "%CD%" "%CD%\health_tray_reminder.py"
+%PYTHON_CMD% -m PyInstaller -y --noconsole --name HealthReminderTest --distpath "%CD%\dist-test" --workpath "%CD%\build-test" --specpath "%CD%" "%CD%\health_tray_reminder.py"
 if errorlevel 1 (
     echo.
     echo ERROR: PyInstaller test build failed.
