@@ -23,8 +23,9 @@ except ImportError:
 
 APP_NAME = "HealthTrayReminder"
 APP_DISPLAY_NAME = "健康提醒"
-APP_VERSION = "1.4.1"
-APP_TITLE = f"{APP_DISPLAY_NAME} v{APP_VERSION}"
+APP_VERSION = "1.4.1-test.1"
+TEST_BUILD = True
+APP_TITLE = f"{APP_DISPLAY_NAME} 测试版 v{APP_VERSION}" if TEST_BUILD else f"{APP_DISPLAY_NAME} v{APP_VERSION}"
 
 WORK_START = datetime_time(8, 30)
 WORK_END = datetime_time(17, 0)
@@ -135,6 +136,16 @@ def reset_water_timer(icon=None, item=None):
     show_notice("喝水提醒", "好的，记得保持")
 
 
+def demo_sit_reminder(icon=None, item=None):
+    show_notice("久坐提醒", random.choice(SIT_REMINDERS))
+
+
+def demo_water_reminder(icon=None, item=None):
+    message = get_water_reminder()
+    show_notice("喝水提醒", message)
+    show_water_popup(message)
+
+
 def snooze_water_timer():
     global last_water_reset
     with state_lock:
@@ -173,6 +184,7 @@ def show_water_popup(message):
 
         width = 320
         height = 150
+        screen_width = window.winfo_screenwidth()
         screen_height = window.winfo_screenheight()
         x = 24
         y = screen_height - height - 70
@@ -333,13 +345,16 @@ def setup_schedule():
 def main():
     global tray_icon
 
-    add_to_startup()
+    if not TEST_BUILD:
+        add_to_startup()
     setup_schedule()
 
     threading.Thread(target=scheduler_loop, daemon=True).start()
 
     menu = Menu(
         MenuItem(f"关于程序 v{APP_VERSION}", show_about),
+        MenuItem("演示喝水提醒", demo_water_reminder),
+        MenuItem("演示久坐提醒", demo_sit_reminder),
         MenuItem("我站起来了", reset_sit_timer),
         MenuItem("喝水了", reset_water_timer),
         MenuItem("退出程序", quit_program),
